@@ -1,5 +1,23 @@
 var socket = io();
 
+function scrollToBottom() {
+  // Selectors
+  var $messages = $('#messages');
+  var $newMessage = $messages.children('li:last-child');
+  // Heights
+  var clientHeight = $messages.prop('clientHeight');
+  var scrollTop = $messages.prop('scrollTop');
+  var scrollHeight = $messages.prop('scrollHeight');
+  var newMessagesHeight = $newMessage.innerHeight();
+  var lastMessageHeight = $newMessage.prev().innerHeight();
+
+  // Scroll at bottom if the client is bottom or near bottom
+  if (clientHeight + scrollTop + newMessagesHeight + lastMessageHeight >= scrollHeight) {
+    $messages.scrollTop(scrollHeight);
+    console.log('Should scroll');
+  }
+}
+
 socket.on('connect', function() {
   console.log('Connected to server');
 
@@ -23,12 +41,7 @@ socket.on('newMessage', function(message) {
   });
 
   $('#messages').append(html);
-
-  // var formattedTime = moment(message.createdAt).format('h:mma');
-  // var li = $('<li></li>');
-  // li.text(`${formattedTime} ${message.from}: ${message.text}`);
-
-  // $('#messages').append(li);
+  scrollToBottom();
 });
 
 socket.on('newLocationMessage', function(message) {
@@ -40,17 +53,8 @@ socket.on('newLocationMessage', function(message) {
     createdAt: formattedTime
   });
 
-  // var formattedTime = moment(message.createdAt).format('h:mma');
-  // var li = $('<li></li>');
-  // // do not use like this, to prevent injecting html
-  // //var a = $(`<a href="${message.url}" target="_blank">My current location</a>`);
-  // var a = $('<a target="_blank">My current location</a>');
-
-  // li.text(`${formattedTime} ${message.from}: `);
-  // a.attr('href', message.url);
-  // li.append(a);
-
   $('#messages').append(html);
+  scrollToBottom();
 });
 
 // socket.emit('createMessage', {
@@ -70,6 +74,7 @@ $('#message-form').on('submit', function(e) {
     text: $messageTextBox.val()
   }, function(response) {
     $messageTextBox.val('');
+    $messageTextBox.focus();
   });
 });
 
