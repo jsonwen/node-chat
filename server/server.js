@@ -13,24 +13,32 @@ var io = socketio(server);
 
 app.use(express.static(publicPath));
 
+// io.emit -> emit to everyone
+// socket.broadcast.emit -> emit to everyone except user
+// socket.emit -> emit to specific user
+// Target by room
+// io.emit ->io.to('room_name').emit
+// socket.broadcast.emit -> socket.broadcoast.to('room_name').emit
+// socket.emit -> does not need to target specifit to room
+
 io.on('connection', (socket) => {
   console.log('New user connected');
-
-  socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
-
-  socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joins'));
 
   socket.on('join', (params, callback) => {
     if (!isRealString(params.name) || !isRealString(params.room)) {
       callback('Name and room name are required.');
     }
 
+    socket.join(params.room);
+
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
+    socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} joined`));
+
     callback();
   });
 
   socket.on('createMessage', (message, callback) => {
     io.emit('newMessage', generateMessage(message.from, message.text));
-
     callback('This is from the server');
   });
 
@@ -40,6 +48,8 @@ io.on('connection', (socket) => {
 
   io.on('disconnect', () => {
     console.log('User disconnected');
+
+    //socket.leave('');
   });
 });
 
