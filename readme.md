@@ -1,7 +1,9 @@
 # Chat app in node.js
 A simple chat app using node.js, websockets, Heroku, jQuery, and geolocation.
 
-To get started
+**[Demo](https://node-chat-2017.herokuapp.com/)**
+
+Getting started
 ```bash
 npm install
 ```
