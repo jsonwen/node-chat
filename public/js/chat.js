@@ -14,17 +14,11 @@ function scrollToBottom() {
   // Scroll at bottom if the client is bottom or near bottom
   if (clientHeight + scrollTop + newMessagesHeight + lastMessageHeight >= scrollHeight) {
     $messages.scrollTop(scrollHeight);
-    console.log('Should scroll');
   }
 }
 
 socket.on('connect', function() {
   console.log('Connected to server');
-
-  // socket.emit('createMessage', {
-  //   from: 'Alice',
-  //   text: 'hello'
-  // });
 });
 
 socket.on('disconnect', function() {
@@ -56,13 +50,6 @@ socket.on('newLocationMessage', function(message) {
   $('#messages').append(html);
   scrollToBottom();
 });
-
-// socket.emit('createMessage', {
-//   from: 'Frank',
-//   text: 'Hello'
-// }, function(response) {
-//   console.log('Got it', response);
-// });
 
 $('#message-form').on('submit', function(e) {
   e.preventDefault();
