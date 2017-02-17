@@ -48,6 +48,17 @@ socket.on('newMessage', function(message) {
   scrollToBottom();
 });
 
+socket.on('updateUserList', function(users) {
+  console.log('userslist', users);
+  var ol = $('<ol></ol>');
+
+  users.forEach(function(user) {
+    ol.append($('<li></li>').text(user));
+  });
+
+  $('#users').html(ol);
+});
+
 socket.on('newLocationMessage', function(message) {
   var formattedTime = moment(message.createdAt).format('h:mma');
   var template = $('#location-message-template').html();
